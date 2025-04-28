@@ -5,6 +5,7 @@
   import { Charset, Document } from "flexsearch";
 
   const logs: string[] = $state([]);
+  const logsReversed = $derived([...logs].reverse());
 
   // create posts collection
   const posts = new Collection({
@@ -34,7 +35,7 @@
   });
 
   // fill collection
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 500; i++) {
     posts.insert({
       title: faker.company.buzzNoun(),
       text: faker.company.buzzPhrase(),
@@ -93,6 +94,7 @@
 {/if}
 
 <div class="text-3xl py-4">Data</div>
+<div class="italic">Showing max. 10 of {posts.find().count()}</div>
 <table class="table table-zebra">
   <thead>
     <tr>
@@ -103,7 +105,7 @@
     </tr><tr> </tr></thead
   >
   <tbody>
-    {#each posts.find().fetch() as post}
+    {#each posts.find({}, { limit: 10 }).fetch() as post}
       <tr>
         <td>{post.id}</td>
         <td>{post.title}</td>
@@ -116,6 +118,6 @@
 <button class="btn btn-primary" onclick={randomize}>Randomize Values</button>
 
 <div class="text-3xl py-4">Logs</div>
-{#each logs as log}
+{#each logsReversed as log}
   <pre>{log}</pre>
 {/each}
